@@ -1,9 +1,9 @@
 #include <FastLED.h>
 
-CRGB leds[60];
+CRGB leds[512];
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, 6>(leds,  100);
+  FastLED.addLeds<NEOPIXEL, 6>(leds,  512);
 }
 
 void loop() { 

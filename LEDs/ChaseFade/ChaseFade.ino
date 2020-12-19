@@ -9,7 +9,7 @@ void setup() {
 
 void loop() {
   static uint8_t hue = 0;
-  static uint8_t pos = 0;
+  static uint16_t pos = 0;
   static bool forward = true;
   
   // set new position
