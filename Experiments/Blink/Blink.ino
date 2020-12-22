@@ -8,12 +8,13 @@ void setup() {
 }
 
 void pulse(int count, int muSec) {
-  for (i=0; i<count; i++) {
+  for (int i=0; i<count; i++) {
     digitalWrite(LED_BUILTIN, HIGH);
     delayMicroseconds(muSec);
     digitalWrite(LED_BUILTIN, LOW);
     delayMicroseconds(muSec);
   }
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 // the loop function runs over and over again forever
