@@ -3,13 +3,14 @@
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
   Serial.begin(115200);
 
 }
 
 void pulseStrip(int count, int muSec) {
   for (int i=0; i<count; i++) {
-    digitalWrite(LED_BUILTIN, HIGH);
+//    digitalWrite(LED_BUILTIN, HIGH);
     delayMicroseconds(muSec);
     digitalWrite(LED_BUILTIN, LOW);
     delayMicroseconds(muSec);
@@ -21,7 +22,6 @@ void resetStrip() {
   digitalWrite(LED_BUILTIN, LOW);
   delay(1);
   digitalWrite(LED_BUILTIN, HIGH);
-  pulseStrip(1,10);
 }
 
 // the loop function runs over and over again forever
