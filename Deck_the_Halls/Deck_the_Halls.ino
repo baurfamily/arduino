@@ -13,6 +13,16 @@
 
 #define AUDIO_OUT_PIN 8
 
+// Duration of notes
+#define SIXTENTH    16
+#define DOTTED_S    12
+#define EIGHTH      8
+#define DOTTED_E    6
+#define QUARTER     4
+#define DOTTED_Q    3
+#define HALF        2
+#define WHOLE       1
+
 struct note_t {
   int pitch;    // The freqency of the pitch, defined in pitches.h
   int duration; // how long to play the pitch for, 2 = half note, 4 - quater note, so on
@@ -22,30 +32,31 @@ struct note_t {
 #define VERSE1_LENGTH 17
 
 struct note_t verse1[] = {
-  {NOTE_G4, 3, 9}, {NOTE_F4, 8, 10}, {NOTE_E4, 4, 11}, {NOTE_D4, 4, 12},
-  {NOTE_C4, 4, 9}, {NOTE_D4, 4, 10}, {NOTE_E4, 4, 11}, {NOTE_C4, 4, 12},
-  {NOTE_D4, 8, 9}, {NOTE_E4, 8, 10}, {NOTE_F4, 8, 11}, {NOTE_D4, 8, 12},
-  {NOTE_E4, 3, 9}, {NOTE_D4, 8, 10}, {NOTE_C4, 4, 11}, {NOTE_B3, 4, 12},
-  {NOTE_C4, 2, 9}
+  {NOTE_G4, DOTTED_Q, 9}, {NOTE_F4, EIGHTH, 10},  {NOTE_E4, QUARTER, 11}, {NOTE_D4, QUARTER, 12},
+  {NOTE_C4, QUARTER, 9},  {NOTE_D4, QUARTER, 10}, {NOTE_E4, QUARTER, 11}, {NOTE_C4, QUARTER, 12},
+  
+  {NOTE_D4, EIGHTH, 9},   {NOTE_E4, EIGHTH, 10},  {NOTE_F4, EIGHTH, 11},  {NOTE_D4, EIGHTH, 12},
+  {NOTE_E4, DOTTED_Q, 9}, {NOTE_D4, EIGHTH, 10},  {NOTE_C4, QUARTER, 11}, {NOTE_B3, QUARTER, 12},
+  
+  {NOTE_C4, HALF, 9}
 };
 
 #define VERSE2_LENGTH 34
 
 struct note_t verse2[] = {
-  {NOTE_D4, 3, 9}, {NOTE_E4, 8, 10}, {NOTE_F4, 4, 11}, {NOTE_D4, 4, 12},
-  {NOTE_E4, 3, 9}, {NOTE_F4, 8, 10}, {NOTE_G4, 4, 11}, {NOTE_D4, 4, 12},
+  {NOTE_D4, DOTTED_Q, 9}, {NOTE_E4, EIGHTH, 10}, {NOTE_F4, QUARTER, 11}, {NOTE_D4, QUARTER, 12},
+  {NOTE_E4, DOTTED_Q, 9}, {NOTE_F4, EIGHTH, 10}, {NOTE_G4, QUARTER, 11}, {NOTE_D4, QUARTER, 12},
   
-  {NOTE_E4, 8, 9}, {NOTE_F4, 8, 10}, {NOTE_G4, 4, 11}, {NOTE_A4, 8, 12},
-  {NOTE_B4, 8, 9}, {NOTE_C5, 4, 10}, {NOTE_B4, 4, 11}, {NOTE_A4, 4, 12},
+  {NOTE_E4, EIGHTH, 9}, {NOTE_F4, EIGHTH, 10},  {NOTE_G4, QUARTER, 11}, {NOTE_A4, EIGHTH, 12},
+  {NOTE_B4, EIGHTH, 9}, {NOTE_C5, QUARTER, 10}, {NOTE_B4, QUARTER, 11}, {NOTE_A4, QUARTER, 12},
   
-  {NOTE_G4, 2, 9}, {NOTE_G4, 3, 10}, {NOTE_F4, 8, 11}, {NOTE_E4, 4, 12},
-  {NOTE_D4, 4, 9}, {NOTE_C4, 4, 10}, {NOTE_D4, 4, 11}, {NOTE_E4, 4, 12},
+  {NOTE_G4, HALF, 9},    {NOTE_G4, DOTTED_Q, 10}, {NOTE_F4, EIGHTH, 11},  {NOTE_E4, QUARTER, 12},
+  {NOTE_D4, QUARTER, 9}, {NOTE_C4, QUARTER, 10},  {NOTE_D4, QUARTER, 11}, {NOTE_E4, QUARTER, 12},
   
-  {NOTE_C4, 4, 9}, {NOTE_A4, 8, 10}, {NOTE_A4, 8, 11}, {NOTE_A4, 8, 12},
-  {NOTE_A4, 8, 9}, {NOTE_G4, 3, 10}, {NOTE_F4, 8, 11}, {NOTE_E4, 4, 12},
+  {NOTE_C4, QUARTER, 9}, {NOTE_A4, EIGHTH, 10},   {NOTE_A4, EIGHTH, 11}, {NOTE_A4, EIGHTH, 12},
+  {NOTE_A4, EIGHTH, 9},  {NOTE_G4, DOTTED_Q, 10}, {NOTE_F4, EIGHTH, 11}, {NOTE_E4, QUARTER, 12},
 
-  {NOTE_D4, 4, 9}, {NOTE_C4, 2, 10}
-
+  {NOTE_D4, QUARTER, 9}, {NOTE_C4, HALF, 10}
 };
 
 void play_phrase(note_t *phrase, int total_notes) {
@@ -79,9 +90,6 @@ void setup() {
 }
 
 void loop() {
-  // no need to repeat the melody.
-  static int i = 9;
-
   delay(2000);
 
   for (int k= 0; k < 2; k++) {
