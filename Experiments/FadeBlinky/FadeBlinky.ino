@@ -4,6 +4,8 @@
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.begin(115200);
   pulseStrip(1);
@@ -52,13 +54,14 @@ void loop() {
   static int brightness = 0;
   static bool up = true;
 
-  int color = 6;
+  static int color = 1;
 
 //  static int redFromReset[PACKET_SIZE] = { 1, 1, 0, 0, 0, 0, 0, 0 };
 //  static int resetFromRed[PACKET_SIZE] = { 1, 1, 1, 1, 1, 1, 0, 0 };
 
   if (up) { brightness++; } else { brightness--; }
   if (brightness == 0 || brightness == 255) { up = !up; }
+  if (brightness == 0) { color = (color+1)%8; }
 
   int val = map( brightness, 0, 255, 1000, 15000);
   
