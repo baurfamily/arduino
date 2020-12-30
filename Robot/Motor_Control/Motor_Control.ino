@@ -20,10 +20,14 @@ enum motorNum {
 };
 
 struct motor_t {
-  int iDirection = FORWARD;
+  int iMotor = 0;
+  int iMotorPWM = 0;
+  int iDirection = STOP;
   int iMotorD0 = 0;
   int iMotorD1 = 0;
 };
+
+struct motor_t motor1;
 
 static struct motor_t Motor0;
 
@@ -51,8 +55,8 @@ void changeMotorDirection(struct motor_t *motor, int iMotorState) {
   }
 }
 
-void setMotorDirection(struct motor_t *motor, int iMotor) {
-  switch (iMotor) {
+void setMotorDirection(struct motor_t *motor) {
+  switch (motor->iMotor) {
     case MOTOR0 :
       digitalWrite(M0_D0, motor->iMotorD0);
       digitalWrite(M0_D1, motor->iMotorD1);
@@ -69,16 +73,22 @@ void setMotorDirection(struct motor_t *motor, int iMotor) {
   }
 }
 
-void motorBreak(struct motor_t *motor, int iMotor) {
-  analogWrite(M1_PWM_CNTL, 255);  // If the PWM is high, and the direction is set either H, H or L, L, the motor will break stop
+void motorBreak(struct motor_t *motor) {
+  analogWrite(motor->iMotorPWM, HIGH);  // If the PWM is high, and the direction is set either H, H or L, L, the motor will break stop
   changeMotorDirection(motor, STOP);
-  setMotorDirection(motor, iMotor);  
+  setMotorDirection(motor);  
 }
 
-void motorFreeStop(struct motor_t *motor, int iMotor) {
-  analogWrite(M1_PWM_CNTL, 0);  // If the PWM is low, and the direction is set either H, H or L, L, the motor will break stop
+void motorFreeStop(struct motor_t *motor) {
+  analogWrite(motor->iMotorPWM, LOW);  // If the PWM is low, and the direction is set either H, H or L, L, the motor will break stop
   changeMotorDirection(motor, STOP);
-  setMotorDirection(motor, iMotor);  
+  setMotorDirection(motor);  
+}
+
+void initMotor(struct motor_t *motor, int iMotor, int iMotorPWM) {
+  motor->iMotor = iMotor;
+  motor->iMotorPWM = iMotorPWM;
+  motorBreak(motor);
 }
 
 void setup() {
@@ -90,30 +100,27 @@ void setup() {
   digitalWrite(M1_D0, LOW);
   digitalWrite(M1_D1, LOW);
   analogWrite(M1_PWM_CNTL, 0);
+
+  initMotor(&motor1, MOTOR1, M1_PWM_CNTL);
 }
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-  struct motor_t motor1;
 
-  analogWrite(M1_PWM_CNTL, 255);
-
-  motorFreeStop(&motor1, MOTOR1);
+  motorBreak(&motor1);
   delay(1000);
 
-  analogWrite(M1_PWM_CNTL, 255);
   changeMotorDirection(&motor1, FORWARD);
-  setMotorDirection(&motor1, MOTOR1);
+  setMotorDirection(&motor1);
+  analogWrite(motor1.iMotorPWM, HIGH);
   delay(5000);
 
-  motorBreak(&motor1, MOTOR1);
+  motorFreeStop(&motor1);
   delay(1000);
   
   changeMotorDirection(&motor1, REVERSE);
-  setMotorDirection(&motor1, MOTOR1);
+  setMotorDirection(&motor1);
+  analogWrite(motor1.iMotorPWM, HIGH);
   delay(5000);
-
-  motorBreak(&motor1, MOTOR1);
-  delay(1000);
 }
