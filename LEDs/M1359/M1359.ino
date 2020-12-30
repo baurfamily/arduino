@@ -10,6 +10,19 @@ void setup() {
 }
 
 void loop() {
+  loopFade();
+}
+
+void loopCycle() {
+  static int color = M1359_BLUE;
+
+  strip.setColor((color++)%8);
+
+  strip.on();
+  delay(1000);
+}
+
+void loopFade() {
   static int brightness = 0;
   static bool up = true;
 

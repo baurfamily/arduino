@@ -15,6 +15,7 @@ M1359Strip::M1359Strip(pin vcc_pin) {
   // this sets us one past white (default 'on'), too "black"
   // without this, other offsets are weird
   pulseOnce();
+  _lit = false;
 }
 
 void M1359Strip::pulseOnce() {
@@ -30,7 +31,23 @@ void M1359Strip::pulse(int count) {
   }
 }
 
-// deprecated?
+//confusingly, this works different than the other pulse functions
+// this one will remove voltate on a 1, and return it on a 0
+// repeated values will *leave* the voltage were it was at
+// there is no artificial delay, which means it should be about 3-4 MHz (I think)
+void M1359Strip::quickPulse(int pattern[], int len) {
+  for (int i=0; i<len; i++) {
+    switch (pattern[i]) {
+      case 0: digitalWrite(_vcc_pin, HIGH); break;
+      case 1: digitalWrite(_vcc_pin, LOW); break;
+      // no default
+    }
+  }
+  // we do restore the high, though
+  digitalWrite(_vcc_pin, HIGH);
+}
+
+
 void M1359Strip::pulse8(int pattern[]) {
   
   for (int i=0; i<8; i++) {
@@ -50,6 +67,30 @@ void M1359Strip::setColor(M1359Color value) {
 void M1359Strip::setBrightness(uint8_t value) {
   _brightness = value;
 }
+
+// may be borked
+void M1359Strip::reset() {
+  digitalWrite(_vcc_pin, LOW);
+  delay(10);
+  digitalWrite(_vcc_pin, HIGH);
+}
+
+void M1359Strip::on() {
+  if (_lit) {
+    reset();
+  }
+  pulse(_color);
+  _lit = true;
+}
+
+void M1359Strip::off() {
+  // this is probably slower than incrementing to 0
+  // but more predictable if we start fading between colors
+  reset();
+  pulseOnce();
+  _lit = false;
+}
+
 void M1359Strip::display() {
   //uses PWM to set brightness (this may be "too fast")
 //  analogWrite(_vcc_pin, value); 
@@ -57,9 +98,8 @@ void M1359Strip::display() {
   //guessing at the muSec to display for
   int brightnessVal = map( _brightness, 0, 255, 1000, 15000);
 
-  pulse(_color);
-  delayMicroseconds(brightnessVal);
   pulse(8-_color);
+  delayMicroseconds(brightnessVal);
+  pulse(_color);
   delayMicroseconds(15000 - brightnessVal);
-
 }
