@@ -6,11 +6,12 @@
 M1359Strip strip(VCC_PIN);
 
 void setup() {
+  strip.on();
   strip.setColor(M1359_BLUE);
 }
 
 void loop() {
-  loopFade();
+  loopCycle();
 }
 
 void loopCycle() {
@@ -18,7 +19,6 @@ void loopCycle() {
 
   strip.setColor((color++)%8);
 
-  strip.on();
   delay(1000);
 }
 

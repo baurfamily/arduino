@@ -62,6 +62,10 @@ void M1359Strip::pulse8(int pattern[]) {
 
 void M1359Strip::setColor(M1359Color value) {
   _color = value;
+  if (_lit) {
+    reset();
+    pulse(_color);
+  }
 }
 
 void M1359Strip::setBrightness(uint8_t value) {
