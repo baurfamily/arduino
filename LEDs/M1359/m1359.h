@@ -5,6 +5,11 @@
 #define M1359_PACKET_SIZE 8
 #define M1359_PACKET_DELAY 20
 
+// these were fairly arbitrary picks
+// it looked good to *our* eyes
+#define M1359_PWM_MIN 1000
+#define M1359_PWM_MAX 15000
+
 #define M1359_OFF 0
 #define M1359_RED 1
 #define M1359_GREEN 2
@@ -13,6 +18,8 @@
 #define M1359_PURPLE 5
 #define M1359_CYAN 6
 #define M1359_WHITE 7
+
+#define M1359_COLOR_COUNT 8
 
 #include "Arduino.h"
 
@@ -39,11 +46,15 @@ class M1359Strip
     void reset();
     void display();
 
+    void fade(M1359Color fromColor, M1359Color toColor);
+
   private:
     int _vcc_pin;
     uint8_t _brightness;
     uint8_t _color; // actually, 3 bits
     bool _lit;
+
+    int brightnessVal();
 };
 
 #endif

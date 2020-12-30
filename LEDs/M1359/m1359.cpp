@@ -72,10 +72,10 @@ void M1359Strip::setBrightness(uint8_t value) {
   _brightness = value;
 }
 
-// may be borked
+// may be borked - originally between 10-20 ms delay
 void M1359Strip::reset() {
   digitalWrite(_vcc_pin, LOW);
-  delay(10);
+  delay(20);
   digitalWrite(_vcc_pin, HIGH);
 }
 
@@ -95,15 +95,41 @@ void M1359Strip::off() {
   _lit = false;
 }
 
+int M1359Strip::brightnessVal() {
+  return map( _brightness, 0, 255, M1359_PWM_MIN, M1359_PWM_MAX);
+}
+
 void M1359Strip::display() {
   //uses PWM to set brightness (this may be "too fast")
 //  analogWrite(_vcc_pin, value); 
 
-  //guessing at the muSec to display for
-  int brightnessVal = map( _brightness, 0, 255, 1000, 15000);
-
-  pulse(8-_color);
-  delayMicroseconds(brightnessVal);
+  pulse(M1359_COLOR_COUNT - _color);
+  delayMicroseconds(brightnessVal());
   pulse(_color);
-  delayMicroseconds(15000 - brightnessVal);
+  delayMicroseconds(M1359_PWM_MAX - brightnessVal());
+}
+
+void M1359Strip::fade(M1359Color fromColor, M1359Color toColor) {
+  reset();
+
+  int distance = toColor - fromColor;
+  if (distance < 0) {
+    distance = M1359_COLOR_COUNT - distance;
+  }
+
+  //this may be backwards...
+  for(int i=0; i<=255; ) {
+    int fadeVal = map( i, 0, 255, M1359_PWM_MIN, M1359_PWM_MAX);
+
+    // start at initial color
+    pulse(fromColor);
+    delayMicroseconds(fadeVal);
+    
+    // get to next color, may have to wrap
+    pulse(distance);
+    delayMicroseconds(M1359_PWM_MAX - brightnessVal());
+    
+    // back to black (ie: effective reset)s
+    pulse(M1359_COLOR_COUNT - toColor);
+  }
 }

@@ -11,7 +11,24 @@ void setup() {
 }
 
 void loop() {
-  loopCycle();
+  loopColorFade();
+}
+
+void loopColorFade() {
+  static M1359Color to = random(8);
+
+  M1359Color from = to;
+  to = random(8);
+
+  strip.fade(from, to);
+}
+
+void loopReset() {
+  for(int i=0; i<100; i++) {
+    strip.reset();
+  }
+
+  delay(1000);
 }
 
 void loopCycle() {
