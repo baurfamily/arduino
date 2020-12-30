@@ -1,7 +1,7 @@
 
 #define VCC_PIN 13
 
-#include "m1359.h"
+#include <M1359.h>
 
 M1359Strip strip(VCC_PIN);
 
