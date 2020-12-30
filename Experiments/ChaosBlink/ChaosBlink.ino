@@ -8,10 +8,11 @@ void setup() {
 void pulseOnce(int muSec) {
   delayMicroseconds(muSec);
   digitalWrite(LED_BUILTIN, LOW);
-  analogWrite(9, 0);
+  analogWrite(9, random(120,130));
+//  analogWrite(9, 0);
   delayMicroseconds(muSec);
   digitalWrite(LED_BUILTIN, HIGH);
-  analogWrite(9, random(10,255));
+  analogWrite(9, 255);
 }
 
 void pulseStrip(int count, int muSec) {
@@ -51,4 +52,7 @@ void loop() {
 
   // wait a couple seconds...
   delay(5000);
+
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
 }
