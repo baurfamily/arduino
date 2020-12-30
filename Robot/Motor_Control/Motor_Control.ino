@@ -39,6 +39,11 @@ void changeMotorDirection(struct motor_t *motor, int iMotorState) {
       motor->iMotorD0 = HIGH;
       motor->iMotorD1 = LOW;
       break;
+     case STOP:
+      motor->iDirection = iMotorState;
+      motor->iMotorD0 = LOW;
+      motor->iMotorD1 = LOW;
+      break;
      default:
       motor->iDirection = STOP;
       motor->iMotorD0 = LOW;
@@ -64,6 +69,18 @@ void setMotorDirection(struct motor_t *motor, int iMotor) {
   }
 }
 
+void motorBreak(struct motor_t *motor, int iMotor) {
+  analogWrite(M1_PWM_CNTL, 255);  // If the PWM is high, and the direction is set either H, H or L, L, the motor will break stop
+  changeMotorDirection(motor, STOP);
+  setMotorDirection(motor, iMotor);  
+}
+
+void motorFreeStop(struct motor_t *motor, int iMotor) {
+  analogWrite(M1_PWM_CNTL, 0);  // If the PWM is low, and the direction is set either H, H or L, L, the motor will break stop
+  changeMotorDirection(motor, STOP);
+  setMotorDirection(motor, iMotor);  
+}
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(M1_PWM_CNTL, OUTPUT);
@@ -81,21 +98,22 @@ void loop() {
   struct motor_t motor1;
 
   analogWrite(M1_PWM_CNTL, 255);
-  changeMotorDirection(&motor1, STOP);
-  setMotorDirection(&motor1, MOTOR1);
+
+  motorFreeStop(&motor1, MOTOR1);
   delay(1000);
 
+  analogWrite(M1_PWM_CNTL, 255);
   changeMotorDirection(&motor1, FORWARD);
   setMotorDirection(&motor1, MOTOR1);
   delay(5000);
 
-  changeMotorDirection(&motor1, STOP);
-  setMotorDirection(&motor1, MOTOR1);
+  motorBreak(&motor1, MOTOR1);
   delay(1000);
   
   changeMotorDirection(&motor1, REVERSE);
   setMotorDirection(&motor1, MOTOR1);
   delay(5000);
 
-
+  motorBreak(&motor1, MOTOR1);
+  delay(1000);
 }
