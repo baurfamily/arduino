@@ -1,0 +1,3 @@
+[submodule "libraries/M1359"]
+	path = libraries/M1359
+	url = https://github.com/baurfamily/M1359.git
