@@ -14,8 +14,8 @@ const int echoPin = 12; // Width of high pulse indicates distance
  *       an object, we have to calculate the travel time using the the formulat D = R*T.
  *       Since we know that the R = 343m/s, and we will get the T, time, then we solve
  *       for distance, by multiplying the two.  Also, the sensor, will send the pulse
- *       and will bounce off the object, and then return to to the sensor, so the distance is
- *       twice wht we need it to be, to we have to half the result.
+ *       and will bounce off the object, and then return to the sensor, so the distance is
+ *       twice what we need it to be, so we have to half the result.
  */
 
 unsigned int readDistance() {
@@ -34,9 +34,9 @@ unsigned int readDistance() {
 //  Serial.println(period);
   if((period > 0) && (period < 118000)) {
     // since the period is in uS, and the speed of sound is in m/s, the result is is meters, which we then
-    // need to adjust to somethng more reasonable, so deviding by 1000, results in mm.  Also, since we are 
-    // using integer math, we loose precision, so these will be rounded.
-    distance = 343 * period / 2000;
+    // need to adjust to somethng more reasonable, so dividing by 1000, results in mm.  Also, since we are 
+    // using integer math, we loose precision, so these will be truncated.
+    distance = (343 * period) / 2000;
   }
 
   return distance;
@@ -45,7 +45,7 @@ unsigned int readDistance() {
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
+  Serial.begin(19200);
   pinMode(trigPin, OUTPUT);
   digitalWrite(trigPin, LOW);
   
@@ -55,5 +55,5 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   Serial.println(readDistance());
-  delay(250);
+  delay(100);
 }

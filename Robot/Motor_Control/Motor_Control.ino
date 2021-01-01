@@ -9,6 +9,9 @@
 #define RIGHT_D0 4
 #define RIGHT_D1 2
 
+#define LEFT_FULL_SPEED 255
+#define RIGHT_FULL_SPEED 255
+
 enum motorState {
   STOP,
   FORWARD,
@@ -35,13 +38,13 @@ void changeMotorDirection(struct motor_t *motor, int iMotorState) {
   switch (iMotorState) {
     case FORWARD :
       motor->iDirection = iMotorState;
-      motor->iMotorD0 = LOW;
-      motor->iMotorD1 = HIGH;
+      motor->iMotorD0 = HIGH;
+      motor->iMotorD1 = LOW;
       break;
      case REVERSE:
       motor->iDirection = iMotorState;
-      motor->iMotorD0 = HIGH;
-      motor->iMotorD1 = LOW;
+      motor->iMotorD0 = LOW;
+      motor->iMotorD1 = HIGH;
       break;
      case STOP:
       motor->iDirection = iMotorState;
@@ -97,24 +100,24 @@ void setMotorSpeed(struct motor_t *motor, int iSpeed) {
 
 void goLeft(int period) {
   goStop();
-  changeMotorDirection(&left, FORWARD);
-  changeMotorDirection(&right, REVERSE);
+  changeMotorDirection(&left, REVERSE);
+  changeMotorDirection(&right, FORWARD);
   setMotorDirection(&left);
   setMotorDirection(&right);
-  setMotorSpeed(&left, 128);
-  setMotorSpeed(&right, 128);
+  setMotorSpeed(&left, LEFT_FULL_SPEED);
+  setMotorSpeed(&right, RIGHT_FULL_SPEED);
   delay(period);
   goStop();
 }
 
 void goRight(int period) {
   goStop();
-  changeMotorDirection(&left, REVERSE);
-  changeMotorDirection(&right, FORWARD);
+  changeMotorDirection(&left, FORWARD);
+  changeMotorDirection(&right, REVERSE);
   setMotorDirection(&left);
   setMotorDirection(&right);
-  setMotorSpeed(&left, 128);
-  setMotorSpeed(&right, 128);
+  setMotorSpeed(&left, LEFT_FULL_SPEED);
+  setMotorSpeed(&right, RIGHT_FULL_SPEED);
   delay(period);
   goStop();
 }
@@ -125,8 +128,8 @@ void goForward(int period) {
   changeMotorDirection(&right, FORWARD);
   setMotorDirection(&left);
   setMotorDirection(&right);
-  setMotorSpeed(&left, 128);
-  setMotorSpeed(&right, 128);
+  setMotorSpeed(&left, LEFT_FULL_SPEED);
+  setMotorSpeed(&right, RIGHT_FULL_SPEED);
   delay(period);
   goStop();
 }
@@ -137,8 +140,8 @@ void goBackward(int period) {
   changeMotorDirection(&right, REVERSE);
   setMotorDirection(&left);
   setMotorDirection(&right);
-  setMotorSpeed(&left, 128);
-  setMotorSpeed(&right, 128);
+  setMotorSpeed(&left, LEFT_FULL_SPEED);
+  setMotorSpeed(&right, RIGHT_FULL_SPEED);
   delay(period);
   goStop();
 }
@@ -149,10 +152,10 @@ void goStop() {
 }
 
 void motorTest() {
-  goForward(1000);
-  goBackward(1000);
-  goLeft(1000);
-  goRight(1000);
+  goForward(2000);
+  goBackward(2000);
+  goLeft(2000);
+  goRight(2000);
 }
 
 void setup() {
