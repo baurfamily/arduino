@@ -1,30 +1,34 @@
-#define VCC_PIN 11
+#define VCC_PIN 13
 
-#include <M1359.h>
+#include <FairyLights.h>
 
-M1359Strip strip(VCC_PIN);
+FairyLights strip(M1359L, VCC_PIN);
 
 void setup() {
   pinMode(12, INPUT);
 
-  strip.reset();
-  strip.on();
   Serial.begin(115200);
   Serial.println("Setup complete");
  
-  strip.setColor(M1359_PURPLE);
+  strip.setColor(Purple);
   strip.setBrightness(255);
 }
 
 void loop() {
-  loopRandomArray();
+  loopNext();
+}
+
+void loopNext() {
+  strip.setBrightness(10);
+  strip.nextColor();
+  strip.display(1000);
 }
 
 #define SIZE 128
 void loopRandomArray() {
-  static byte pattern[SIZE] = {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  };
+//  static byte pattern[SIZE] = {
+//    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+//  };
 
   //red-green-red
   // static byte pattern[SIZE] = {
@@ -37,9 +41,9 @@ void loopRandomArray() {
   // };
 
   //three color
-  // static byte pattern[SIZE] = {
-  //   1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,1,1,0,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,0,0,0,1,1,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,0,1,1,1,1,0,1,0,1,1,1,0,0,1,1,0,0,0,0,0,1,1,1,0,1,0,1,0,0,1,1,0,1
-  // };
+  static byte pattern[SIZE] = {
+    1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,1,1,0,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,0,0,0,1,1,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,0,1,1,1,1,0,1,0,1,1,1,0,0,1,1,0,0,0,0,0,1,1,1,0,1,0,1,0,0,1,1,0,1
+  };
 
   // for(int i=0; i<SIZE; i++) {
   //   pattern[i] = (i%4 == 1 ? 1 : 0);
@@ -90,9 +94,9 @@ void loopChaos() {
 }
 
 void loopColorFade() {
-  static M1359Color to = random(8);
+  static fl_color to = random(8);
 
-  M1359Color from = to;
+  fl_color from = to;
   to = random(8);
 
   strip.fade(from, to);
@@ -107,7 +111,7 @@ void loopReset() {
 }
 
 void loopCycle() {
-  static int color = M1359_BLUE;
+  static int color = FL_BLUE;
   strip.setBrightness(0);
   strip.setColor((++color)%8);
   strip.display(1000);
