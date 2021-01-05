@@ -12,24 +12,22 @@ void setup() {
  
   strip.setColor(Purple);
   strip.setBrightness(255);
+  strip.reset();
 }
 
 void loop() {
-  loopNext();
+  loopArray();
 }
 
 void loopNext() {
   strip.setBrightness(10);
   strip.nextColor();
   strip.display(1000);
+//  delay(1000);
 }
 
 #define SIZE 128
-void loopRandomArray() {
-//  static byte pattern[SIZE] = {
-//    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-//  };
-
+void loopArray() {
   //red-green-red
   // static byte pattern[SIZE] = {
   //   0,0,1,0,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,0,1,1,1,0,1,0,0,0,0,0,1,0,1,1,1,1,1,0,1,1,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,0,1,0,1
@@ -45,17 +43,6 @@ void loopRandomArray() {
     1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,1,1,0,1,0,0,1,0,1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,0,0,0,1,1,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,0,1,1,1,1,0,1,0,1,1,1,0,0,1,1,0,0,0,0,0,1,1,1,0,1,0,1,0,0,1,1,0,1
   };
 
-  // for(int i=0; i<SIZE; i++) {
-  //   pattern[i] = (i%4 == 1 ? 1 : 0);
-  // }
-  for(int i=4; i<SIZE; i++) {
-    if (random(10) > 2) {
-      pattern[i] = 1;
-    } else {
-      pattern[i] = 0;
-    }
-    // pattern[i] = random(2);
-  }
 
   Serial.print("pattern: ");
   for(int i=0; i<SIZE; i++) {
@@ -63,9 +50,39 @@ void loopRandomArray() {
   }
   Serial.println("");
 
-  // for(int i=500; i<750; i += 10) {
+//   for(int i=500; i<750; i += 10) {
     strip.quickPulse(pattern, SIZE, 750);
-  // }
+//   }
+
+  delay(1000);
+}
+
+void loopRandomArray() {
+  static byte pattern[SIZE] = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  };
+
+  for(int i=0; i<SIZE; i++) {
+    pattern[i] = (i%4 == 1 ? 1 : 0);
+  }
+//  for(int i=4; i<SIZE; i++) {
+//    if (random(10) > 2) {
+//      pattern[i] = 1;
+//    } else {
+//      pattern[i] = 0;
+//    }
+//    // pattern[i] = random(2);
+//  }
+
+  Serial.print("pattern: ");
+  for(int i=0; i<SIZE; i++) {
+    Serial.print(pattern[i]);
+  }
+  Serial.println("");
+
+   for(int i=500; i<750; i += 10) {
+    strip.quickPulse(pattern, SIZE, 750);
+   }
 
   delay(5000);
 }
@@ -112,7 +129,7 @@ void loopReset() {
 
 void loopCycle() {
   static int color = FL_BLUE;
-  strip.setBrightness(0);
+  strip.setBrightness(128);
   strip.setColor((++color)%8);
   strip.display(1000);
 
