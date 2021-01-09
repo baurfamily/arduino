@@ -3,7 +3,7 @@
 CRGB leds[100];
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, 6>(leds,  100);
+  FastLED.addLeds<NEOPIXEL, 6>(leds,  100); 
 }
 
 void loop() { 
