@@ -17,148 +17,48 @@ void setup() {
 }
 
 void loop() {
-  loopPurple();
+  //cyan
+  setBlue1();
+  setGreen1();
+
+  //purple
+  setRed2();
+  setBlue2();
 }
 
-void loopCycle() {
-  delay(5000);
-  Serial.println("0  - 0000 - O/O");
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("1  - 1000 - O/R");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("2  - 0100 - O/R");
-  digitalWrite(10, LOW);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("3  - 1100 - B/R");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("4  - 0010 - O/C");
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("5  - 1010 - O/G");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("6  - 0110 - O/G");
-  digitalWrite(10, LOW);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("7  - 1110 - O/Y");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, LOW);
-  
-  delay(5000);
-  Serial.println("8  - 0001 - Y/O");
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("9  - 1001 - G/O");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("10 - 0101 - G/O");
-  digitalWrite(10, LOW);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, LOW);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("11 - 1101 - C/O");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, LOW);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("12 - 0011 - R/B");
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("13 - 1011 - R/O");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("14 - 0111 - R/O");
-  digitalWrite(10, LOW);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, HIGH);
-  
-  delay(5000);
-  Serial.println("15 - 1111 - O/O");
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, HIGH);
-} 
 
-void loopYellow() {
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, LOW);
-  delay(10);
-
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, HIGH);
-  delay(10);
+void hgh(int pin) {
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH); 
 }
 
-void loopPurple() {
-  
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
-  digitalWrite(12, HIGH);
-  digitalWrite(13, HIGH);
-  delay(10);
-  
-  digitalWrite(10, HIGH);
-  digitalWrite(11, HIGH);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
-  delay(10);
+void low(int pin) {
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, LOW);
+}
+
+void off(int pin) {
+  digitalWrite(pin, LOW);
+  pinMode(pin, INPUT);
+}
+
+void setRed1() { hgh(10); off(11); off(12); low(13); }
+void setRed2() { low(10); off(11); off(12); hgh(13); }
+
+void setBlue1() { off(10); low(11); hgh(12); off(13); }
+void setBlue2() { off(10); hgh(11); low(12); off(13); }
+
+void setGreen1() { off(10); off(11); hgh(12); low(13); }
+void setGreen2() { off(10); off(11); low(12); hgh(13); }
+
+
+void loopByteCycle() {
+  for(int i=0; i<8; i++) {
+    Serial.println(i);
+    digitalWrite(10, (i & 1));
+    digitalWrite(11, (i & 2));
+    digitalWrite(12, (i & 4));
+    digitalWrite(13, (i & 8));
+    delay(1000);
+  }
 }
