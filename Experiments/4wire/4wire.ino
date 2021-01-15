@@ -1,4 +1,9 @@
 
+#define BYPASS 13
+#define CENTER 12
+#define RED 11
+#define BLUE 10
+
 void setup() {
 //  pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
@@ -17,13 +22,23 @@ void setup() {
 }
 
 void loop() {
-  //cyan
-  setBlue1();
-  setGreen1();
-
-  //purple
+  Serial.println("Reds");
+  setRed1();
+  delay(2000);
   setRed2();
+  delay(2000);
+  
+  Serial.println("Greens");
+  setGreen1();
+  delay(2000);
+  setGreen2();
+  delay(2000);
+
+  Serial.println("Blues");
+  setBlue1();
+  delay(2000);
   setBlue2();
+  delay(2000);
 }
 
 
@@ -42,14 +57,22 @@ void off(int pin) {
   pinMode(pin, INPUT);
 }
 
-void setRed1() { hgh(10); off(11); off(12); low(13); }
-void setRed2() { low(10); off(11); off(12); hgh(13); }
+void setBlue1() { hgh(BLUE); off(RED); low(CENTER); off(BYPASS); }
+void setBlue2() { low(BLUE); off(RED); hgh(CENTER); off(BYPASS); }
 
-void setBlue1() { off(10); low(11); hgh(12); off(13); }
-void setBlue2() { off(10); hgh(11); low(12); off(13); }
+void setRed1() { off(BLUE); low(RED); hgh(CENTER); off(BYPASS); }
+void setRed2() { off(BLUE); hgh(RED); low(CENTER); off(BYPASS); }
 
-void setGreen1() { off(10); off(11); hgh(12); low(13); }
-void setGreen2() { off(10); off(11); low(12); hgh(13); }
+void setGreen1() { hgh(BLUE); low(RED); off(CENTER); off(BYPASS); }
+void setGreen2() { low(BLUE); hgh(RED); off(CENTER); off(BYPASS); }
+
+
+//Secondary
+void setCyan1() { hgh(BLUE); low(RED); off(CENTER); low(BYPASS); }
+void setCyan2() { low(BLUE); hgh(RED); off(CENTER); hgh(BYPASS); }
+
+void setRedBlue() { hgh(BLUE); hgh(RED); low(CENTER); off(BYPASS); }
+void setBlueRed() { low(BLUE); low(RED); hgh(CENTER); off(BYPASS); }
 
 
 void loopByteCycle() {
