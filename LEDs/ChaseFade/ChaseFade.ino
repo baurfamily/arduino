@@ -1,15 +1,16 @@
 #include <FastLED.h>
-#define LED_COUNT 100
+#define LED_COUNT 300
+#define LED_START 0
 
 CRGB leds[LED_COUNT];
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, 6>(leds,  LED_COUNT);
+  FastLED.addLeds<TM1812, 6>(leds,  LED_COUNT);
 }
 
 void loop() {
   static uint8_t hue = 0;
-  static uint16_t pos = 0;
+  static uint16_t pos = LED_START;
   static bool forward = true;
   
   // set new position
@@ -17,7 +18,8 @@ void loop() {
 
   if (forward) { pos++; } else { pos--; }
   
-  if (pos == LED_COUNT-1 || pos == 0) {
+  
+  if (pos == LED_COUNT-1 || pos == LED_START) {
     forward = !forward;
   }
 
