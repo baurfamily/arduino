@@ -1,10 +1,10 @@
 #include <FastLED.h>
-#define LED_COUNT 48
+#define LED_COUNT 576
 
 CRGB leds[LED_COUNT];
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, 18>(leds,  LED_COUNT);
+  FastLED.addLeds<NEOPIXEL, 6>(leds,  LED_COUNT);
 }
 
 void loop() {

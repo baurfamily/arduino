@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define LED_COUNT 100
+#define LED_COUNT 576
 
 CRGB leds[LED_COUNT];
 
@@ -27,7 +27,7 @@ void loop() {
     forward = true;
     hue = (hue + 32)%256;
   }
-  for(int i = 0; i<5; i++) {
+  for(int i = 0; i<29; i++) {
     int center = 20*i+10;
     int pos = center-len;
     
@@ -50,5 +50,5 @@ void loop() {
 
 
     FastLED.show();
-    delay(500);
+    delay(100);
 }

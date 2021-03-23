@@ -1,16 +1,25 @@
-
+// imports WIFI ssid/password (not included in repo)
 #include <WiFi.h>
-#include <WebServer.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
+#include <WebServer.h>
 #include <FastLED.h>
 
 #include <ArduinoJson.h>
 
-// imports WIFI ssid/password (not included in repo)
-#include "env.h"
+#define HEX_SIDE_COUNT 6
+#define HEX_LEDS_PER_SIDE 8
+#define HEX_LEDS_COUNT HEX_SIDE_COUNT * HEX_LEDS_PER_SIDE
 
-#include "globals.h"
+#define HEX_COUNT 12
+#define TOTAL_LEDS HEX_COUNT * HEX_LEDS_COUNT
+
+#include "env.h"
+#include "hex.h"
+
+WebServer server(80);
+Hex hexes[HEX_COUNT];
+CRGB leds[HEX_COUNT][HEX_SIDE_COUNT][HEX_LEDS_PER_SIDE];
 
 void setup(void) {
   Serial.begin(115200);
@@ -42,12 +51,11 @@ void setup(void) {
   server.begin();
   Serial.println("HTTP server started");
 
-  for(int i=0; i<HEX_COUNT * LEDS_PER_HEX; i++)
-  {
-    leds[i] = CRGB::White;  
+  for(int i=0; i<HEX_COUNT; i++) {
+    hexes[i] = Hex( leds[i] );
   }
 
-  FastLED.addLeds<NEOPIXEL, 4>(leds, HEX_COUNT * LEDS_PER_HEX);
+  FastLED.addLeds<NEOPIXEL, 4>(leds, TOTAL_LEDS);
   FastLED.show();
 }
 
