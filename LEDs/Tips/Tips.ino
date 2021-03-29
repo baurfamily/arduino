@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define LED_COUNT 100
+#define LED_COUNT 576
 
 CRGB leds[LED_COUNT];
 
@@ -27,23 +27,23 @@ void loop() {
     forward = true;
     hue = (hue + 32)%256;
   }
-  for(int i = 0; i<5; i++) {
+  for(int i = 0; i<29; i++) {
     int center = 20*i+10;
     int pos = center-len;
     
     if (forward) {
       for(int j = 0; j<len*2+1; j++){
-        leds[pos + j] = CHSV(hue, 255, 100);
+        leds[pos + j] = CHSV(hue, 255, 255);
       }
     } else {
       int start = center-10;
       for (int j = start; j<pos; j++) {
-        leds[j] = CHSV(hue, 255, 100);
+        leds[j] = CHSV(hue, 255, 255);
       }
       int endCap = center + 10;
       int endPos = center+len;
       for (int j = endPos; j<endCap; j++) {
-        leds[j] = CHSV(hue, 255, 100);
+        leds[j] = CHSV(hue, 255, 255);
       }
     }
   }

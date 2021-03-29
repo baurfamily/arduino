@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define LED_COUNT 100
+#define LED_COUNT 576
 
 CRGB leds[LED_COUNT];
 
