@@ -1,20 +1,20 @@
 
-#define CHAIN { .hue=0, .boundry=1, .increment=1, .boundry_diff=1, .inc_speed=100 }
-#define RAINBOW_CHAIN { .hue=0, .boundry=8, .increment=5, .boundry_diff=10, .inc_speed=500 }
-#define RAINBOW_CHAIN_SLOW { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000 }
-#define RAINBOW { .hue=0, .boundry=48, .increment=1, .boundry_diff=1, .inc_speed=100 }
-#define TWO_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=128, .inc_speed=20 }
-#define FOUR_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=64, .inc_speed=20 }
-#define DISCO { .hue=0, .boundry=48, .increment=100, .boundry_diff=100, .inc_speed=500 }
+#define CHAIN { .hue=0, .boundry=1, .increment=1, .boundry_diff=1, .inc_speed=100, .value=255 }
+#define RAINBOW_CHAIN { .hue=0, .boundry=8, .increment=5, .boundry_diff=10, .inc_speed=500, .value=255 }
+#define RAINBOW_CHAIN_SLOW { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000, .value=255 }
+#define RAINBOW { .hue=0, .boundry=48, .increment=1, .boundry_diff=1, .inc_speed=100, .value=255 }
+#define TWO_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=128, .inc_speed=20, .value=255 }
+#define FOUR_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=64, .inc_speed=20, .value=255 }
+#define DISCO { .hue=0, .boundry=48, .increment=100, .boundry_diff=100, .inc_speed=500, .value=255 }
 
-#define RED { .hue=0, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define ORANGE { .hue=32, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define YELLOW { .hue=64, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define GREEN { .hue=96, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define AQUA { .hue=128, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define BLUE { .hue=160, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define PURPLE { .hue=192, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
-#define PINK { .hue=224, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000 }
+#define RED { .hue=0, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define ORANGE { .hue=32, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define YELLOW { .hue=64, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define GREEN { .hue=96, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define AQUA { .hue=128, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define BLUE { .hue=160, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define PURPLE { .hue=192, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
+#define PINK { .hue=224, .boundry=576, .increment=0, .boundry_diff=0, .inc_speed=1000, .value=255 }
 
 void setPattern() {
   Serial.println("got set");
@@ -42,6 +42,8 @@ void setPattern() {
 
   pattern newPattern;
   const char* patternName = doc["pattern"];
+  int value = doc["value"].as<uint8_t>();
+  
   bool found = false;
 
   if (strcmp(patternName, "chain")==0) { newPattern = CHAIN; found = true; }
@@ -62,25 +64,16 @@ void setPattern() {
   if (strcmp(patternName, "pink")==0) { newPattern = PINK; found = true; }
 
   if (found) {
-    Serial.println("-------------------");
-    Serial.print("show: ");
-    Serial.print(newPattern.hue);
-    Serial.print(" / ");
-    Serial.print(newPattern.boundry);
-    Serial.print(" / ");
-    Serial.print(newPattern.increment);
-    Serial.print(" / ");
-    Serial.print(newPattern.boundry_diff);
-    Serial.print(" / ");
-    Serial.print(newPattern.inc_speed);
-    Serial.println("");
     
     current.hue = newPattern.hue;
     current.boundry = newPattern.boundry;
     current.increment = newPattern.increment;
     current.boundry_diff = newPattern.boundry_diff;
     current.inc_speed = newPattern.inc_speed;
-  
+    current.value = value == 0 ? newPattern.value : value;
+
+    printPatternToSerial(current);
+
     Serial.println("setting...");
     config.setPattern(current);
     

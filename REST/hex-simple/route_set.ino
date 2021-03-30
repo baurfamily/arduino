@@ -28,26 +28,18 @@ void setLights() {
    */
 
   current.hue = doc["hue"].as<uint8_t>();
-  current.boundry = doc["boundry"].as<int16_t>();
-  current.increment = doc["increment"].as<int8_t>();
-  current.boundry_diff = doc["boundryDiff"].as<int8_t>();
-  current.inc_speed = doc["incrementSpeed"].as<int16_t>();
+  current.boundry = doc["boundry"].as<uint16_t>();
+  current.increment = doc["increment"].as<uint8_t>();
+  current.boundry_diff = doc["boundryDiff"].as<uint8_t>();
+  current.inc_speed = doc["incrementSpeed"].as<uint16_t>();
+  current.value = doc["value"].as<uint8_t>();
+
+  if (current.value == 0) current.value = 255;
 
   Serial.println("setting...");
   config.setPattern(current);
-  
-  Serial.println("-------------------");
-  Serial.print("show: ");
-  Serial.print(current.hue);
-  Serial.print(" / ");
-  Serial.print(current.boundry);
-  Serial.print(" / ");
-  Serial.print(current.increment);
-  Serial.print(" / ");
-  Serial.print(current.boundry_diff);
-  Serial.print(" / ");
-  Serial.print(current.inc_speed);
-  Serial.println("");
+
+  printPatternToSerial(current);
     
   server.send(200, "text/json", "{\"status\": \"okay\"}");
 }

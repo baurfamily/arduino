@@ -11,6 +11,7 @@ typedef struct pattern {
   uint8_t  increment;
   uint8_t  boundry_diff;
   uint16_t inc_speed;
+  uint8_t value;
 } pattern;
 
 typedef struct configData_t
@@ -20,6 +21,22 @@ typedef struct configData_t
   // application config data starts below
   pattern currentPattern;
 };
+
+void printPatternToSerial(pattern p)
+{
+  Serial.print(p.hue);
+  Serial.print(" / ");
+  Serial.print(p.boundry);
+  Serial.print(" / ");
+  Serial.print(p.increment);
+  Serial.print(" / ");
+  Serial.print(p.boundry_diff);
+  Serial.print(" / ");
+  Serial.print(p.inc_speed);
+  Serial.print(" / ");
+  Serial.print(p.value);
+  Serial.println("");
+}
  
 class AppConfig
 {
@@ -95,7 +112,7 @@ public:
  }
  
 private:
-  const pattern DEFAULT_PATTERN = { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000 };
+  const pattern DEFAULT_PATTERN = { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000, .value=255 };
   
   const uint16_t EEPROM_ADDR = 0;
   const uint8_t EEPROM_SIG[2] = { 0xee, 0x11 };
