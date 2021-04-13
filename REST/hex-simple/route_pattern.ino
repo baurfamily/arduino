@@ -2,6 +2,7 @@
 #define CHAIN { .hue=0, .boundry=1, .increment=1, .boundry_diff=1, .inc_speed=100, .value=255 }
 #define RAINBOW_CHAIN { .hue=0, .boundry=8, .increment=5, .boundry_diff=10, .inc_speed=500, .value=255 }
 #define RAINBOW_CHAIN_SLOW { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000, .value=255 }
+#define RAINBOW_FADE { .hue=0, .boundry=1, .increment=2, .boundry_diff=10, .inc_speed=20, .value=255 }
 #define RAINBOW { .hue=0, .boundry=48, .increment=1, .boundry_diff=1, .inc_speed=100, .value=255 }
 #define TWO_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=128, .inc_speed=20, .value=255 }
 #define FOUR_COLOR { .hue=0, .boundry=48, .increment=1, .boundry_diff=64, .inc_speed=20, .value=255 }
@@ -49,6 +50,7 @@ void setPattern() {
   if (strcmp(patternName, "chain")==0) { newPattern = CHAIN; found = true; }
   if (strcmp(patternName, "rainbow_chain")==0) { newPattern = RAINBOW_CHAIN; found = true; }
   if (strcmp(patternName, "rainbow_chain_slow")==0) { newPattern = RAINBOW_CHAIN_SLOW; found = true; }
+  if (strcmp(patternName, "rainbow_fade")==0) { newPattern = RAINBOW_FADE; found = true; }
   if (strcmp(patternName, "rainbow")==0) { newPattern= RAINBOW; found = true; }
   if (strcmp(patternName, "two_color")==0) { newPattern = TWO_COLOR; found = true; }
   if (strcmp(patternName, "four_color")==0) { newPattern = FOUR_COLOR; found = true; }

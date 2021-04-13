@@ -6,12 +6,12 @@
  // Access to these parameters is through the object properties only
 
 typedef struct pattern {
-  uint8_t hue;
+  uint8_t  hue;
   uint16_t boundry;
   uint8_t  increment;
   uint8_t  boundry_diff;
   uint16_t inc_speed;
-  uint8_t value;
+  uint8_t  value;
 } pattern;
 
 typedef struct configData_t
@@ -20,6 +20,7 @@ typedef struct configData_t
   uint8_t version;
   // application config data starts below
   pattern currentPattern;
+  uint8_t brightness;
 };
 
 void printPatternToSerial(pattern p)
@@ -47,6 +48,13 @@ public:
     dirty = true;
     lastSet = millis();
   };
+
+  inline uint8_t getBrightness() { return(_D.brightness); };
+  inline void setBrightness(uint8_t brightness) {
+    _D.brightness = brightness;
+    dirty = true;
+    lastSet = millis();
+  }
 
   void begin()
   { 
@@ -79,37 +87,40 @@ public:
       return(false);
     }
     
-   // handle any version adjustments here
-   if (_D.version != CONFIG_VERSION)
-   {
-     // do something here to update data...
-     // ... don't need to worry about this until a version change
-   }
- 
-   // update version number to current
-   _D.version = CONFIG_VERSION;
- 
-   return(true);
- }
+    // handle any version adjustments here
+    if (_D.version != CONFIG_VERSION)
+    {
+      // we didn't have a brightness value in the last version,
+      // so anything in memory was junk...
+      _D.brightness = 255;
   
- bool configSave(void)
- {
-  // nothing to do
-  if (!dirty) return true;
+      // update version number to current
+      _D.version = CONFIG_VERSION;
 
-  // wait a little while...
-  if (lastSet + 10000 > millis()) return false;
-
-  Serial.println("saving config");
-
-  EEPROM.begin(sizeof(configData_t));
-  EEPROM.put(EEPROM_ADDR, _D);
-  EEPROM.end();
+      // set to be saved
+      lastSet = millis();
+    } 
+    return(true);
+  }
   
-  dirty = false;
+  bool configSave(void)
+  {
+    // nothing to do
+    if (!dirty) return true;
+
+    // wait a little while...
+    if (lastSet + 10000 > millis()) return false;
+
+    Serial.println("saving config");
+
+    EEPROM.begin(sizeof(configData_t));
+    EEPROM.put(EEPROM_ADDR, _D);
+    EEPROM.end();
   
-  return(true);
- }
+    dirty = false;
+  
+    return(true);
+  }
  
 private:
   const pattern DEFAULT_PATTERN = { .hue=0, .boundry=8, .increment=1, .boundry_diff=2, .inc_speed=1000, .value=255 };
@@ -121,6 +132,6 @@ private:
   
   bool dirty = false;
   int lastSet = millis();
- };
+};
 
- #endif
+#endif

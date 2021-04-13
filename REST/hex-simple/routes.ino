@@ -8,6 +8,7 @@ void restServerRouting() {
   server.on(F("/help"), HTTP_GET, showHelp);
   server.on(F("/leds"), HTTP_POST, setLights);
   server.on(F("/pattern"), HTTP_POST, setPattern);
+  server.on(F("/brightness"), HTTP_POST, setBrightness);
   
   // Set not found response
   server.onNotFound(showHelp);

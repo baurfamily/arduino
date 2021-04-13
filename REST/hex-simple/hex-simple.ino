@@ -63,6 +63,7 @@ void setup(void) {
 
   config.begin();
   current = config.getPattern();
+  brightness = config.getBrightness();
 
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, LED_COUNT);
   FastLED.show();
@@ -70,28 +71,31 @@ void setup(void) {
   printPatternToSerial(current);
 }
 
+int lastIncrement = millis();
+
 void loop(void) {
   server.handleClient();
-
-  brightness = (brightness+1) % 255;
   ledcWrite(ledChannel, brightness);
 
-  current.hue += current.increment;
-
-  int chunks = LED_COUNT / current.boundry;
-  for (int i=0; i<current.boundry; i++) {
-    for (int j=0; j<chunks; j++) {
-      leds[i + j*current.boundry] = CHSV(
-        current.hue + j*current.boundry_diff,
-        255,
-        current.value
-       );
-    }
-  }
+  if (millis() < lastIncrement + current.inc_speed) {
+    lastIncrement = millis();
+    
+    current.hue += current.increment;
   
-  FastLED.show();
-  config.configSave();
-  delay(current.inc_speed);
+    int chunks = LED_COUNT / current.boundry;
+    for (int i=0; i<current.boundry; i++) {
+      for (int j=0; j<chunks; j++) {
+        leds[i + j*current.boundry] = CHSV(
+          current.hue + j*current.boundry_diff,
+          255,
+          current.value
+         );
+      }
+    }
+    
+    FastLED.show();
+    config.configSave();
+  }
 }
 
  
