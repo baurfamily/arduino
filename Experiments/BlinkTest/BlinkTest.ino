@@ -1,3 +1,6 @@
+#include "Arduino.h"
+
+#define LED_BUILTIN 13
 
 // the setup function runs once when you press reset or power the board
 void setup() {

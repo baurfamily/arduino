@@ -1,4 +1,3 @@
-// imports WIFI ssid/password (not included in repo)
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
@@ -9,17 +8,30 @@
 
 #define LED_COUNT 576
 #define DATA_PIN 13
+#define PWM_PIN 12
 
 #include "config.h"
+
+// imports WIFI ssid/password (not included in repo)
 #include "env.h"
 
 WebServer server(80);
 CRGB leds[LED_COUNT];
 AppConfig config = AppConfig();
 
-pattern current = { .hue = 0, .boundry = 48, .increment = 1, .boundry_diff = 1, .inc_speed = 1000 };
+pattern current;
+uint8_t brightness = 0;
+
+// setting PWM properties
+const int freq = 5000;
+const int ledChannel = 0;
+const int resolution = 8;
 
 void setup(void) {
+  ledcSetup(ledChannel, freq, resolution);
+  ledcAttachPin(PWM_PIN, ledChannel);
+  ledcWrite(ledChannel, 0);
+  
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -51,39 +63,40 @@ void setup(void) {
 
   config.begin();
   current = config.getPattern();
+  brightness = config.getBrightness();
 
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, LED_COUNT);
   FastLED.show();
 
-  Serial.println("-------------------");
-  Serial.print("show: ");
-  Serial.print(current.hue);
-  Serial.print(" / ");
-  Serial.print(current.boundry);
-  Serial.print(" / ");
-  Serial.print(current.increment);
-  Serial.print(" / ");
-  Serial.print(current.boundry_diff);
-  Serial.print(" / ");
-  Serial.print(current.inc_speed);
-  Serial.println("");
+  printPatternToSerial(current);
 }
+
+int lastIncrement = millis();
 
 void loop(void) {
   server.handleClient();
 
-  current.hue += current.increment;
-
-  int chunks = LED_COUNT / current.boundry;
-  for (int i=0; i<current.boundry; i++) {
-    for (int j=0; j<chunks; j++) {
-      leds[i + j*current.boundry] = CHSV(current.hue + j*current.boundry_diff, 255, 255);
-    }
-  }
+  ledcWrite(ledChannel, brightness);
   
-  FastLED.show();
-  config.configSave();
-  delay(current.inc_speed);
+  if (millis() > lastIncrement + current.inc_speed) {
+    lastIncrement = millis();
+    
+    current.hue += current.increment;
+  
+    int chunks = LED_COUNT / current.boundry;
+    for (int i=0; i<current.boundry; i++) {
+      for (int j=0; j<chunks; j++) {
+        leds[i + j*current.boundry] = CHSV(
+          current.hue + j*current.boundry_diff,
+          255,
+          current.value
+         );
+      }
+    }
+    
+    FastLED.show();
+    config.configSave();
+  }
 }
 
  
