@@ -75,9 +75,10 @@ int lastIncrement = millis();
 
 void loop(void) {
   server.handleClient();
-  ledcWrite(ledChannel, brightness);
 
-  if (millis() < lastIncrement + current.inc_speed) {
+  ledcWrite(ledChannel, brightness);
+  
+  if (millis() > lastIncrement + current.inc_speed) {
     lastIncrement = millis();
     
     current.hue += current.increment;
