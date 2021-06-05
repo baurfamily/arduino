@@ -17,7 +17,7 @@
 #define LS_FIRE_0 17
 #define LS_FIRE_1 16
 
-#define TRANSMITRETRY 5 // will attempt to retry 5 times before failing to be ready
+#define TRANSMITRETRY 10 // will attempt to retry 5 times before failing to be ready
 #define COUNTDOWNTIMERINTERVAL 100 // millis
 #define BLINKINTERVAL 500 // millis
 #define TRANSMITINTERVAL 250 //millis
@@ -83,17 +83,17 @@ boolean debounceUnlockRead() {
 
 void lampTest() {
   for(int i = 0; i < 4; i++) {
-    digitalWrite(LS_UNLOCK, HIGH);
+//    digitalWrite(LS_UNLOCK, HIGH);
     digitalWrite(LS_READY, HIGH);
-    digitalWrite(LS_CONT_0, HIGH);
-    digitalWrite(LS_CONT_1, HIGH);
+//    digitalWrite(LS_CONT_0, HIGH);
+//    digitalWrite(LS_CONT_1, HIGH);
     digitalWrite(LS_SELECT, HIGH);
     digitalWrite(LS_BUZZER_EN, HIGH); 
     delay(125);   
-    digitalWrite(LS_UNLOCK, LOW);
+//    digitalWrite(LS_UNLOCK, LOW);
     digitalWrite(LS_READY, LOW);
-    digitalWrite(LS_CONT_0, LOW);
-    digitalWrite(LS_CONT_1, LOW);
+//    digitalWrite(LS_CONT_0, LOW);
+//    digitalWrite(LS_CONT_1, LOW);
     digitalWrite(LS_SELECT, LOW);
     digitalWrite(LS_BUZZER_EN, LOW);  
     delay(125);   
@@ -131,6 +131,7 @@ void checkReady() {
   if(!countReady) {
    blinkState = !blinkState;
    digitalWrite(LS_READY, blinkState); 
+   digitalWrite(LS_SELECT, !blinkState);
   } else {
     blinkState = HIGH;
     digitalWrite(LS_READY, blinkState); 
@@ -170,15 +171,15 @@ void setup() {
     Serial.println(F("radio hardware not responding!"));
     while (1) {
         digitalWrite(LS_READY, HIGH);
-        digitalWrite(LS_UNLOCK, HIGH);
+        digitalWrite(LS_SELECT, HIGH);
         delay(250);
         digitalWrite(LS_READY, LOW);
-        digitalWrite(LS_UNLOCK, LOW);
+        digitalWrite(LS_SELECT, LOW);
         delay(250);
       } // hold program in infinite loop to prevent subsequent errors
   }
   
-  radio.setPALevel(RF24_PA_MIN);         // RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX is default.
+  radio.setPALevel(RF24_PA_MAX);         // RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX is default.
   radio.setDataRate(RF24_1MBPS);
   //radio.setPayloadSize(sizeof(STATE));  // default value is the maximum 32 bytes
 

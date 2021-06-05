@@ -31,11 +31,12 @@
 #define PAD_SELECT_1 1
 #define ARM_SELECTED 0
 
-#define TRANSMITRETRY 5 // will attempt to retry 5 times before failing to be ready
+#define TRANSMITRETRY 10 // will attempt to retry 5 times before failing to be ready
 #define COUNTDOWNTIMERINTERVAL 100 // millis
 #define BLINKINTERVAL 500 // millis
 #define TRANSMITINTERVAL 250 //millis
 #define DEBOUNCEDELAY 50 // millis
+#define FLASHINTERVAL 250 // millis
 
 struct base_state_t {
   boolean unlocked = 0; // This is set if the base has been unlocked
@@ -64,6 +65,7 @@ static boolean isArmed = false;
 static boolean canArm = true;
 static byte secondsDigitDefault = 6;
 static byte milliSecDigitDefault = 0;
+static boolean flashState = LOW;
 
 RF24 radio(LS_SPI_CE, LS_SPI_CSN);
 const byte address[][6] = {"Contl", "Base"};  // Address of the pipes we will be using
@@ -292,7 +294,7 @@ void setup() {
       } // hold program in infinite loop to prevent subsequent errors
   }
 
-  radio.setPALevel(RF24_PA_MIN);         // RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX is default.
+  radio.setPALevel(RF24_PA_MAX);         // RF24_PA_MIN / RF24_PA_LOW / RF24_PA_HIGH / RF24_PA_MAX is default.
   radio.setDataRate(RF24_1MBPS);
   //radio.setPayloadSize(sizeof(STATE));     // default value is the maximum 32 bytes
 
@@ -327,6 +329,7 @@ void loop() {
   static unsigned long countDownPreviousTime = currentTime;
   static unsigned long countReadyPreviousTime = currentTime;
   static unsigned long transmitPreviousTime = currentTime;
+  static unsigned long flashPreviousTime = currentTime;
   boolean readyToLaunch = ((secondsDigit == 0) && (milliSecDigit == 0));
 
   // Debug code to test the countdown timer
@@ -379,10 +382,6 @@ void loop() {
 //    Serial.print("Unlock: "); Serial.println(base_state.unlocked);
 //    Serial.print("Continuity 0: "); Serial.println(base_state.cont_0);
 //    Serial.print("Continuity 1: "); Serial.println(base_state.cont_1);
-
-    digitalWrite(LS_UNLOCKED, base_state.unlocked);
-    digitalWrite(LS_CONT_0, base_state.cont_0);
-    digitalWrite(LS_CONT_1, base_state.cont_1);
 //  } else {
 //    Serial.println("No Data");    
   }
@@ -400,10 +399,35 @@ void loop() {
     canArm = false;
   }
 
+  if((currentTime - flashPreviousTime) >= FLASHINTERVAL) {
+    flashPreviousTime += FLASHINTERVAL;
+    flashState = !flashState;
+    
+    if(armedSwitchOn && !canArm) { // Something has gone wrong, and can't arm
+      digitalWrite(LS_ARMED, flashState);
+      if(!base_state.unlocked) { // If the base is not unlocked
+        digitalWrite(LS_UNLOCKED, flashState);
+      } else {
+        digitalWrite(LS_UNLOCKED, base_state.unlocked);
+      }
+      if(!base_state.cont_0 && pad0Selected) {
+        digitalWrite(LS_CONT_1, base_state.cont_1);
+        digitalWrite(LS_CONT_0, flashState);
+      } else {
+        digitalWrite(LS_CONT_0, base_state.cont_0);
+      }
+      if(!base_state.cont_1 && pad1Selected) {
+        digitalWrite(LS_CONT_0, base_state.cont_0);
+        digitalWrite(LS_CONT_1, flashState);
+      } else {
+        digitalWrite(LS_CONT_1, base_state.cont_1);
+      }
+    }
+  }
+
 //  Serial.print("radioReady: "); Serial.println(radioReady);
   if(radioReady) {
     if(armedSwitchOn && canArm) {
-
       if(!isArmed) {
         padWhenArmed = selectedPad;
         isArmed = true;
@@ -420,17 +444,28 @@ void loop() {
         resetTimer();
         countingDown = false;
         controller_state.armed = false;
-        digitalWrite(LS_ARMED, LOW);      
+    }
+    
+    if(!armedSwitchOn) {
+      digitalWrite(LS_ARMED, LOW);
+      digitalWrite(LS_UNLOCKED, base_state.unlocked);
+      digitalWrite(LS_CONT_0, base_state.cont_0);
+      digitalWrite(LS_CONT_1, base_state.cont_1);
     }
   } else {
       resetTimer();
       countingDown = false;
       controller_state.armed = false;
       canArm = false;
-      digitalWrite(LS_ARMED, LOW);
-      digitalWrite(LS_UNLOCKED, LOW);
-      digitalWrite(LS_CONT_0, LOW);
-      digitalWrite(LS_CONT_1, LOW);
+      base_state.cont_0 = LOW;
+      base_state.cont_1 = LOW;
+      base_state.unlocked = LOW;
+      if(!armedSwitchOn) {
+        digitalWrite(LS_ARMED, LOW);
+        digitalWrite(LS_UNLOCKED, LOW);
+        digitalWrite(LS_CONT_0, LOW);
+        digitalWrite(LS_CONT_1, LOW);
+      }
   }
 
   controller_state.launch = readyToLaunch && launchButtonPressed;
