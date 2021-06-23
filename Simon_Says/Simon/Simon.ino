@@ -332,7 +332,7 @@ void startWait() {
     }
   }
   while(digitalRead(BLUE_PIN)) {  // wait for button to be released to start
-    Serial.println("Waiting");
+//    Serial.println("Waiting");
     tone(AUDIO_OUT_PIN, START_TONE);
   }
   noTone(AUDIO_OUT_PIN);
